@@ -19,17 +19,18 @@ export class FetcherError extends Error {
 /**
  * SWR-compatible fetcher function
  * Uses the API client singleton for consistent headers
+ * Updated: 007-jwt-authentication - Uses JWT Bearer tokens
  */
 export async function fetcher<T>(url: string): Promise<T> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-  const userId = apiClient.getUserId();
+  const accessToken = apiClient.getAccessToken();
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
 
-  if (userId) {
-    headers['X-User-Id'] = userId;
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
   }
 
   try {
